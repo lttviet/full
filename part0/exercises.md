@@ -1,4 +1,6 @@
-0.4.
+https://www.websequencediagrams.com/
+
+# 0.4.
 
 title New Note
 
@@ -26,7 +28,7 @@ that renders notes to display
 end note
 
 
-0.5.
+# 0.5.
 
 title SPA Note
 
@@ -50,7 +52,7 @@ browser executes the event handler
 that renders notes to display
 end note
 
-0.6
+# 0.6
 
 title SPA New Note
 
