@@ -1,60 +1,57 @@
 import React from 'react'
-
-const Header = (props) => {
-  return (
-    <h1>{props.course}</h1>
-  )
-}
-
-const Content = (props) => {
-  return (
-    <>
-      {props.parts.map((part) =>
-        <Part key={part.name} name={part.name} exercises={part.exercises} />
-      )}
-    </>
-  )
-}
-
-const Part = (props) => {
-  return (
-    <p>
-      {props.name} {props.exercises}
-    </p>
-  )
-}
-
-
-const Total = (props) => {
-  return (
-    <p>Number of exercises {props.parts.map(part => part.exercises).reduce((prev, curr) => prev + curr)}</p>
-  )
-}
+import Course from './components/Course'
 
 const App = () => {
-  const course = {
-    name: 'Half Stack Application development',
-    parts: [
-      {
-        name: 'Fundementals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    },
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
 
   return (
     <>
-      <Header course={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      {courses.map(course =>
+        <Course key={course.id} course={course} />
+      )}
     </>
   )
 }
