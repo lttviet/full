@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Notification = ({ success = true, message }) => {
   const successStyle = {
@@ -8,12 +9,12 @@ const Notification = ({ success = true, message }) => {
     borderStyle: 'solid',
     borderRadius: '5px',
     padding: '10px',
-    marginBottom: '10px'
+    marginBottom: '10px',
   }
 
   const errorStyle = {
     ...successStyle,
-    color: 'red'
+    color: 'red',
   }
 
   return (
@@ -21,10 +22,15 @@ const Notification = ({ success = true, message }) => {
       {message && (
         <div style={success ? successStyle : errorStyle}>
           {message}
-        </div >
+        </div>
       )}
     </>
   )
+}
+
+Notification.propTypes = {
+  success: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
 }
 
 export default Notification

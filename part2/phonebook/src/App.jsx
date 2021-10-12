@@ -15,7 +15,7 @@ const App = () => {
   useEffect(() => {
     personService
       .getAll()
-      .then(initialPersons => {
+      .then((initialPersons) => {
         setPersons(initialPersons)
       })
       .catch(console.error)
@@ -42,42 +42,42 @@ const App = () => {
     event.preventDefault()
 
     if (!newName || !newNumber) {
-      alert(`Please fill out name and number.`)
+      showNotification(false, 'Please fill out name and number')
       return
     }
 
-    const found = persons.find(p => p.name === newName)
+    const found = persons.find((p) => p.name === newName)
     if (found) {
+      // eslint-disable-next-line no-alert
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
         const newPerson = { ...found, number: newNumber }
         personService
           .update(found.id, newPerson)
-          .then(returnedPerson => {
+          .then((returnedPerson) => {
             setPersons(
-              persons.map(p => p.id === returnedPerson.id ? returnedPerson : p)
+              persons.map((p) => (p.id === returnedPerson.id ? returnedPerson : p)),
             )
 
             showNotification(true, `Changed number for ${returnedPerson.name}`)
             setNewName('')
             setNewNumber('')
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error.response.data)
             showNotification(false, error.response.data.error)
           })
       }
-
     } else {
       personService
         .create({ name: newName, number: newNumber })
-        .then(person => {
+        .then((person) => {
           setPersons(persons.concat(person))
 
           showNotification(true, `Added ${person.name}`)
           setNewName('')
           setNewNumber('')
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error.response.data)
           showNotification(false, error.response.data.error)
         })
@@ -86,25 +86,24 @@ const App = () => {
 
   const deletePerson = (person) => {
     const { name, id } = person
+    // eslint-disable-next-line no-alert
     if (window.confirm(`Delete ${name}?`)) {
       personService
         .deletePerson(id)
         .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
+          setPersons(persons.filter((p) => p.id !== id))
 
           showNotification(true, `Deleted ${name}`)
         })
-        .catch(_ => showNotification(false, `${name} is not found`))
+        .catch(() => showNotification(false, `${name} is not found`))
     }
   }
 
   const personsToShow = !searchName
     ? persons
-    : persons.filter(person =>
-      person.name
-        .toLowerCase()
-        .includes(searchName.toLowerCase())
-    )
+    : persons.filter((person) => person.name
+      .toLowerCase()
+      .includes(searchName.toLowerCase()))
 
   return (
     <>
