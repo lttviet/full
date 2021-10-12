@@ -18,7 +18,7 @@ mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
   name: String,
-  number: String
+  number: String,
 })
 
 const Person = mongoose.model('Person', personSchema)
@@ -26,11 +26,9 @@ const Person = mongoose.model('Person', personSchema)
 if (process.argv.length === 3) {
   // only password provided
   // return all entries
-  Person.find({}).then(result => {
+  Person.find({}).then((result) => {
     console.log('phonebook:')
-    result.forEach(p => {
-      console.log(`${p.name} ${p.number}`)
-    })
+    result.forEach((p) => console.log(`${p.name} ${p.number}`))
     mongoose.connection.close()
   })
 } else {
