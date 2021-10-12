@@ -26,9 +26,8 @@ app.get('/info', (req, res, next) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then(ret => {
-    res.json(ret)
-  })
+  Person.find({})
+    .then(ret => res.json(ret))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -39,29 +38,17 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(next)
 })
 
-app.post('/api/persons', (req, res) => {
-  const { name, number } = req.body
-
-  if (!name) {
-    return res.status(400).json({
-      error: 'Missing name'
-    })
-  }
-
-  if (!number) {
-    return res.status(400).json({
-      error: 'Missing number'
-    })
-  }
-
-  const person = new Person({ name, number })
-  person.save().then(ret => res.json(ret))
+app.post('/api/persons', (req, res, next) => {
+  const person = new Person(req.body)
+  person.save()
+    .then(ret => res.json(ret))
+    .catch(next)
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
   const person = req.body
-
-  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+  const ops = { new: true, runValidators: true, context: 'query' }
+  Person.findByIdAndUpdate(req.params.id, person, ops)
     .then(updatedPerson => res.json(updatedPerson))
     .catch(next)
 })
@@ -83,6 +70,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: error.message })
   }
 
   next(error)

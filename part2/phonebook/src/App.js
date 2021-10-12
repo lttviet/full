@@ -61,7 +61,10 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
-          .catch(_ => showNotification(false, `${found.name} is not found`))
+          .catch(error => {
+            console.error(error.response.data)
+            showNotification(false, error.response.data.error)
+          })
       }
 
     } else {
@@ -73,7 +76,11 @@ const App = () => {
           showNotification(true, `Added ${person.name}`)
           setNewName('')
           setNewNumber('')
-        }).catch(console.error)
+        })
+        .catch(error => {
+          console.error(error.response.data)
+          showNotification(false, error.response.data.error)
+        })
     }
   }
 
