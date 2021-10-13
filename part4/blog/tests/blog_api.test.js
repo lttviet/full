@@ -60,6 +60,28 @@ test('a specific blog can be viewed', async () => {
   expect(resultBlog.body).toEqual(processedBlogToView)
 })
 
+test('a blog can be added', async () => {
+  const newBlog = {
+    author: 'New',
+    title: 'Super new',
+    url: '/new/123',
+    likes: 0,
+  }
+
+  const resultBlog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(resultBlog.body.author).toEqual(newBlog.author)
+  expect(resultBlog.body.title).toEqual(newBlog.title)
+  expect(resultBlog.body.url).toEqual(newBlog.url)
+
+  const allBlogs = await api.get('/api/blogs')
+  expect(allBlogs.body).toHaveLength(initialBlog.length + 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
