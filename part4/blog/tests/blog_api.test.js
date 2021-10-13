@@ -39,6 +39,12 @@ test('a specific blog is within the returned blogs', async () => {
   expect(blog).toContainEqual(initialBlog[0])
 })
 
+test('blog has id property', async () => {
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[0].id).toBeDefined()
+})
+
 test('a specific blog can be viewed', async () => {
   const blogsAtStart = await blogsInDb()
 
