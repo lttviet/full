@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
-import { initialBlog } from './test_helper'
+import { blogsInDb, initialBlog } from './test_helper'
 import Blog from '../models/blog'
 
 const api = supertest(app)
@@ -37,6 +37,21 @@ test('a specific blog is within the returned blogs', async () => {
   }))
 
   expect(blog).toContainEqual(initialBlog[0])
+})
+
+test('a specific blog can be viewed', async () => {
+  const blogsAtStart = await blogsInDb()
+
+  const blogToView = blogsAtStart[0]
+
+  const resultBlog = await api
+    .get(`/api/blogs/${blogToView.id}`)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const processedBlogToView = JSON.parse(JSON.stringify(blogToView))
+
+  expect(resultBlog.body).toEqual(processedBlogToView)
 })
 
 afterAll(() => {
