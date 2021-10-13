@@ -82,7 +82,7 @@ test('a blog can be added', async () => {
   expect(allBlogs.body).toHaveLength(initialBlog.length + 1)
 })
 
-test('if an added blog does not have likes field, it will to 0', async () => {
+test('adding a blog with no likes defaults likes to 0', async () => {
   const newBlog = {
     author: 'New',
     title: 'Super new',
@@ -96,6 +96,18 @@ test('if an added blog does not have likes field, it will to 0', async () => {
     .expect('Content-Type', /application\/json/)
 
   expect(resultBlog.body.likes).toEqual(0)
+})
+
+test('adding a blog with no title and url returns 400', async () => {
+  const newBlog = {
+    author: 'Me',
+    likes: 100,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
 
 afterAll(() => {
