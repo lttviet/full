@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node --experimental-specifier-resolution=node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose",
     "dev": "nodemon --experimental-specifier-resolution=node index.js"
   },
   "author": "Viet Le",
@@ -15,6 +15,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.1",
+    "jest": "^27.2.5",
     "nodemon": "^2.0.13"
   },
   "dependencies": {
@@ -23,5 +24,8 @@
     "express": "^4.17.1",
     "mongoose": "^6.0.10",
     "morgan": "^1.10.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
