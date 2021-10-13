@@ -82,6 +82,22 @@ test('a blog can be added', async () => {
   expect(allBlogs.body).toHaveLength(initialBlog.length + 1)
 })
 
+test('if an added blog does not have likes field, it will to 0', async () => {
+  const newBlog = {
+    author: 'New',
+    title: 'Super new',
+    url: '/new/123',
+  }
+
+  const resultBlog = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(resultBlog.body.likes).toEqual(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
