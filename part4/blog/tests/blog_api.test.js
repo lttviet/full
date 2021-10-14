@@ -126,9 +126,41 @@ describe('deletion of a blog', () => {
       .expect(204)
   })
 
-  test('fails with an invalid id', async () => {
+  test('fails with a misformatted id', async () => {
     await api
       .delete('/api/blogs/abc')
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
+describe('update of a blog', () => {
+  test('succeeds with a valid id', async () => {
+    const blogsAtStart = await blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const newLike = { likes: 7 }
+
+    const returnedBlog = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(newLike)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(returnedBlog.body.likes).toEqual(newLike.likes)
+  })
+
+  test('fails with 404 for an invalid id', async () => {
+    await api
+      .put('/api/blogs/111111111111111111111111')
+      .send({ likes: 123 })
+      .expect(404)
+  })
+
+  test('fails with 400 for a misformatted id', async () => {
+    await api
+      .put('/api/blogs/123')
+      .send({ likes: 123 })
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
