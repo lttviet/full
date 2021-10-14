@@ -116,6 +116,24 @@ describe('addition of a new blog', () => {
   })
 })
 
+describe('deletion of a blog', () => {
+  test('succeeds with a valid id', async () => {
+    const blogsAtStart = await blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+  })
+
+  test('fails with an invalid id', async () => {
+    await api
+      .delete('/api/blogs/abc')
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
