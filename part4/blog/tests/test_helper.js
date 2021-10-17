@@ -23,8 +23,8 @@ const initialUsers = [
     password: 'superSecret1111',
   },
   {
-    username: '2',
-    name: '2',
+    username: 'secondUser',
+    name: 'secondName',
     password: 'superSecret22222',
   },
 ]
