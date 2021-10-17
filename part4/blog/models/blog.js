@@ -4,7 +4,10 @@ import mongoose from 'mongoose'
 
 const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  author: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+  },
   url: { type: String, required: true },
   likes: { type: Number, default: 0 },
 })
@@ -17,4 +20,6 @@ blogSchema.set('toJSON', {
   },
 })
 
-export default mongoose.model('Blog', blogSchema)
+const Blog = mongoose.model('Blog', blogSchema)
+
+export default Blog

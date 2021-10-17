@@ -3,6 +3,7 @@ import express from 'express'
 import 'express-async-errors'
 import mongoose from 'mongoose'
 import blogsRouter from './controllers/blogs'
+import usersRouter from './controllers/users'
 import { DB_URI } from './utils/config'
 import logger from './utils/logger'
 import { errorHandler, requestLogger, unknownEndpoint } from './utils/middleware'
@@ -23,6 +24,7 @@ app.use(express.json())
 app.use(requestLogger)
 
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
 
 app.use(unknownEndpoint)
 app.use(errorHandler)

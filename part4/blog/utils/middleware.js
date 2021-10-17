@@ -1,8 +1,7 @@
 import morgan from 'morgan'
 import logger from './logger'
 
-morgan.token('body', (req) => JSON.stringify(req.body))
-const requestLogger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
+const requestLogger = morgan('dev')
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
