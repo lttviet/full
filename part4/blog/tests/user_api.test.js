@@ -3,16 +3,34 @@ import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
 import User from '../models/user'
-import { usersInDb } from './test_helper'
+import { initialUsers, usersInDb } from './test_helper'
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await User.deleteMany({})
 
-  const passwordHash = await hash('abcSecret123', 10)
-  const user = new User({ username: 'root', name: 'root', passwordHash })
-  await user.save()
+  const usersPromiseArray = initialUsers.map(async (u) => ({
+    ...u,
+    passwordHash: await hash(u.password, 10),
+  }))
+  const users = await Promise.all(usersPromiseArray)
+
+  const promiseArray = users.map((u) => new User(u).save())
+  await Promise.all(promiseArray)
+})
+
+describe('viewing all users', () => {
+  test('returns json', async () => {
+    const usersAtStart = await usersInDb()
+
+    const users = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(users.body).toHaveLength(usersAtStart.length)
+  })
 })
 
 describe('addition of a new user', () => {
