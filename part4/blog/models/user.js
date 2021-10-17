@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import mongoose from 'mongoose'
-import uniqueValidator from 'mongoose-unique-validator'
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -19,8 +18,6 @@ const userSchema = new mongoose.Schema({
     },
   ],
 })
-
-userSchema.plugin(uniqueValidator)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
