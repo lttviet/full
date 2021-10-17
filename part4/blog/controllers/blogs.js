@@ -1,21 +1,33 @@
+/* eslint-disable no-underscore-dangle */
 import express from 'express'
 import Blog from '../models/blog'
+import User from '../models/user'
 
 const blogsRouter = express.Router()
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog
+    .find({})
+    .populate('author', { username: 1, name: 1 })
   response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
+  const blog = await Blog.findById(request.params.id).populate('author')
   response.json(blog)
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const blog = new Blog(request.body)
+  const user = await User.findOne()
+
+  const blog = new Blog({ ...request.body, author: user._id })
   const savedBlog = await blog.save()
+
+  console.log(user)
+  user.blogs = user.blogs.concat(savedBlog._id)
+  console.log(user)
+  await user.save()
+
   response.status(201).json(savedBlog)
 })
 
