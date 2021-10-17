@@ -63,6 +63,27 @@ describe('addition of a new user', () => {
     expect(name).toEqual(newUser.name)
     expect(passwordHash).not.toBeDefined()
   })
+
+  test('fails if username is already taken', async () => {
+    const usersAtStart = await usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Root',
+      password: '12345678',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('`username` to be unique')
+
+    const usersAtEnd = await usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
 })
 
 afterAll(() => {
