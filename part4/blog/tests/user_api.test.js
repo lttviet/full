@@ -97,7 +97,7 @@ describe('addition of a new user', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(result.body.error).toContain('`username` to be unique')
+    expect(result.body.error).toContain('username must be unique')
 
     const usersAtEnd = await usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)

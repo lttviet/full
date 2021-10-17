@@ -28,6 +28,15 @@ usersRouter.post('/', async (request, response) => {
       })
   }
 
+  const foundUsername = await User.findOne({ username })
+  if (foundUsername) {
+    return response
+      .status(400)
+      .json({
+        error: 'username must be unique.',
+      })
+  }
+
   const saltRound = 10
   const passwordHash = await hash(password, saltRound)
 
