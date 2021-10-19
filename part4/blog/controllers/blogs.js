@@ -1,7 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import express from 'express'
+import jwt from 'jsonwebtoken'
 import Blog from '../models/blog'
 import User from '../models/user'
+import { SECRET } from '../utils/config'
 
 const blogsRouter = express.Router()
 
@@ -19,18 +21,38 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog)
 })
 
-blogsRouter.post('/', async (request, response) => {
-  const user = await User.findOne()
+const getTokenFrom = (request) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
 
-  const blog = new Blog({ ...request.body, author: user._id })
+blogsRouter.post('/', async (request, response) => {
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, SECRET)
+
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+
+  const { title, url, likes } = request.body
+
+  const blog = new Blog({
+    title,
+    url,
+    likes,
+    author: user._id,
+  })
   const savedBlog = await blog.save()
 
-  console.log(user)
   user.blogs = user.blogs.concat(savedBlog._id)
-  console.log(user)
   await user.save()
 
-  response.status(201).json(savedBlog)
+  return response.status(201).json(savedBlog)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
