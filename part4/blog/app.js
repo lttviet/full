@@ -7,7 +7,12 @@ import loginRouter from './controllers/login'
 import usersRouter from './controllers/users'
 import { DB_URI } from './utils/config'
 import logger from './utils/logger'
-import { errorHandler, requestLogger, unknownEndpoint } from './utils/middleware'
+import {
+  errorHandler,
+  requestLogger,
+  tokenExtractor,
+  unknownEndpoint,
+} from './utils/middleware'
 
 logger.info('connecting to', DB_URI)
 
@@ -22,6 +27,7 @@ mongoose.connect(DB_URI)
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(tokenExtractor)
 app.use(requestLogger)
 
 app.use('/api/blogs', blogsRouter)
