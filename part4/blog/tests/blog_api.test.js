@@ -1,15 +1,39 @@
+/* eslint-disable no-underscore-dangle */
+import { hash } from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
-import { blogsInDb, initialBlog } from './test_helper'
 import Blog from '../models/blog'
+import User from '../models/user'
+import { SECRET } from '../utils/config'
+import { blogsInDb, initialBlog, initialUsers } from './test_helper'
 
+let returnedUser;
+let token;
 const api = supertest(app)
 
 beforeEach(async () => {
+  await User.deleteMany({})
   await Blog.deleteMany({})
 
-  const blogObj = initialBlog.map((b) => new Blog(b))
+  const passwordHash = await hash(initialUsers[0].password, 10)
+  const user = new User({
+    username: initialUsers[0].username,
+    passwordHash,
+  })
+  returnedUser = await user.save()
+
+  token = jwt.sign(
+    { returnedUser, id: returnedUser._id },
+    SECRET,
+    { expiresIn: 60 * 60 },
+  )
+
+  const blogObj = initialBlog.map((b) => new Blog({
+    ...b,
+    author: returnedUser,
+  }))
   const promiseArray = blogObj.map((blog) => blog.save())
   await Promise.all(promiseArray)
 })
@@ -32,9 +56,9 @@ describe('when there is initially some blogs saved', () => {
     const response = await api.get('/api/blogs')
 
     const blog = response.body.map(({
-      title, author, url, likes,
+      title, url, likes,
     }) => ({
-      title, author, url, likes,
+      title, url, likes,
     }))
 
     expect(blog).toContainEqual(initialBlog[0])
@@ -75,11 +99,11 @@ describe('addition of a new blog', () => {
 
     const resultBlog = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    expect(resultBlog.body.author).toEqual(newBlog.author)
     expect(resultBlog.body.title).toEqual(newBlog.title)
     expect(resultBlog.body.url).toEqual(newBlog.url)
 
@@ -96,6 +120,7 @@ describe('addition of a new blog', () => {
 
     const resultBlog = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -111,8 +136,24 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
+  })
+
+  test('fails with 401 with no token', async () => {
+    const newBlog = {
+      author: 'New',
+      title: 'Super new',
+      url: '/new/123',
+      likes: 0,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
   })
 })
 

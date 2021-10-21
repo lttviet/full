@@ -4,13 +4,11 @@ import User from '../models/user'
 const initialBlog = [
   {
     title: 'First post',
-    author: 'First athour',
     url: '/first-post',
     likes: 100,
   },
   {
     title: 'Second post',
-    author: 'Second athour',
     url: '/second-post',
     likes: 24,
   },
@@ -30,7 +28,7 @@ const initialUsers = [
 ]
 
 const blogsInDb = async () => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('author', { username: 1, name: 1 })
   return blogs.map((blog) => blog.toJSON())
 }
 
