@@ -1,1 +1,2 @@
-DELETE http://localhost:3001/api/blogs/616611edd0dfd373e679c47d
+DELETE http://localhost:3001/api/blogs/61718de4c4a84eaebcdcea80
+Authorization: Bearer jwtToken

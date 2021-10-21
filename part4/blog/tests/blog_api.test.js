@@ -25,7 +25,7 @@ beforeEach(async () => {
   returnedUser = await user.save()
 
   token = jwt.sign(
-    { returnedUser, id: returnedUser._id },
+    { username: returnedUser.username, id: returnedUser._id },
     SECRET,
     { expiresIn: 60 * 60 },
   )
@@ -164,14 +164,49 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
   })
 
   test('fails with a misformatted id', async () => {
     await api
       .delete('/api/blogs/abc')
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
       .expect('Content-Type', /application\/json/)
+  })
+
+  test('fails with 401 if missing token', async () => {
+    await api
+      .delete('/api/blogs/abc')
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('fails with 401 if wrong user', async () => {
+    const passwordHash = await hash('hello', 10)
+    const user = new User({
+      username: 'hello',
+      passwordHash,
+    })
+    const anotherUser = await user.save()
+
+    const anotherToken = jwt.sign(
+      { username: anotherUser.username, id: anotherUser._id },
+      SECRET,
+      { expiresIn: 60 * 60 },
+    )
+
+    const blogsAtStart = await blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    const result = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${anotherToken}`)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toEqual('token invalid')
   })
 })
 
@@ -207,6 +242,6 @@ describe('update of a blog', () => {
   })
 })
 
-afterAll(() => {
-  mongoose.connection.close()
+afterAll(async () => {
+  await mongoose.connection.close()
 })
