@@ -1,9 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import express from 'express'
-import jwt from 'jsonwebtoken'
 import Blog from '../models/blog'
-import User from '../models/user'
-import { SECRET } from '../utils/config'
+import { userExtractor } from '../utils/middleware'
 
 const blogsRouter = express.Router()
 
@@ -21,15 +19,8 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog)
 })
 
-blogsRouter.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, SECRET)
-
-  if (!request.token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  const user = await User.findById(decodedToken.id)
-
+blogsRouter.post('/', userExtractor, async (request, response) => {
+  const { user } = request
   const { title, url, likes } = request.body
 
   const blog = new Blog({
@@ -65,20 +56,24 @@ blogsRouter.put('/:id', async (request, response) => {
   }
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, SECRET)
-
-  if (!request.token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+  const { user } = request
 
   const blog = await Blog.findById(request.params.id)
 
-  if (blog.author.toString() !== decodedToken.id) {
+  if (!blog) {
+    return response.status(404).json({ error: 'not found' })
+  }
+
+  if (blog.author.toString() !== user._id.toString()) {
     return response.status(401).json({ error: 'token invalid' })
   }
 
-  blog.delete()
+  user.blogs = user.blogs.filter((b) => b.toString() !== blog._id.toString())
+  await user.save()
+
+  await blog.delete()
+
   return response.status(204).end()
 })
 
