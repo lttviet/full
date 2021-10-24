@@ -1,40 +1,68 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import blogService from '../services/blogs'
+import loginService from '../services/login'
 
-const LoginForm = ({
-  username, onUsernameChange, password, onPasswordChange, onSubmitForm,
-}) => (
-  <form onSubmit={onSubmitForm}>
-    <div>
-      username
-      <input
-        type="text"
-        name="username"
-        value={username}
-        onChange={onUsernameChange}
-      />
-    </div>
+const LoginForm = ({ handleLogin }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-    <div>
-      password
-      <input
-        type="password"
-        name="password"
-        value={password}
-        onChange={onPasswordChange}
-      />
-    </div>
+  const handleUsernameChange = ({ target }) => {
+    setUsername(target.value)
+  }
 
-    <button type="submit">login</button>
-  </form>
-)
+  const handlePasswordChange = ({ target }) => {
+    setPassword(target.value)
+  }
+
+  const handleSubmitLogin = async (event) => {
+    event.preventDefault()
+
+    try {
+      const returnedUser = await loginService.login({ username, password })
+
+      window.localStorage.setItem('loggedInUser', JSON.stringify(returnedUser))
+
+      blogService.setToken(returnedUser.token)
+
+      setUsername('')
+      setPassword('')
+
+      handleLogin(returnedUser)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmitLogin}>
+      <div>
+        username
+        <input
+          type="text"
+          name="username"
+          value={username}
+          onChange={handleUsernameChange}
+        />
+      </div>
+
+      <div>
+        password
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={handlePasswordChange}
+        />
+      </div>
+
+      <button type="submit">login</button>
+    </form>
+  )
+}
 
 LoginForm.propTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  onUsernameChange: PropTypes.func.isRequired,
-  onPasswordChange: PropTypes.func.isRequired,
-  onSubmitForm: PropTypes.func.isRequired,
+  handleLogin: PropTypes.func.isRequired,
 }
 
 export default LoginForm
