@@ -5,6 +5,8 @@ const Blog = ({ blog }) => (
   <div>
     {blog.title}
     {' '}
+    {blog.url}
+    {' '}
     {blog.author.name}
   </div>
 )
@@ -12,6 +14,7 @@ const Blog = ({ blog }) => (
 Blog.propTypes = {
   blog: PropTypes.shape({
     title: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
     }).isRequired,
