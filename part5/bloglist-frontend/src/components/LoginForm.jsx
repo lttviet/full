@@ -30,7 +30,8 @@ const LoginForm = ({ handleLogin }) => {
 
       handleLogin(returnedUser)
     } catch (e) {
-      console.error(e)
+      handleLogin(null, e.response.data.error)
+      console.error(e.response)
     }
   }
 
