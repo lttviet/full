@@ -14,6 +14,13 @@ const App = () => {
     blogService.getAll().then((b) => setBlogs(b))
   }, [])
 
+  useEffect(() => {
+    const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
+    if (loggedInUserJSON) {
+      setUser(JSON.parse(loggedInUserJSON))
+    }
+  }, [])
+
   const handleUsernameChange = ({ target }) => {
     setUsername(target.value)
   }
@@ -27,12 +34,20 @@ const App = () => {
 
     try {
       const returnedUser = await loginService.login({ username, password })
+
+      window.localStorage.setItem('loggedInUser', JSON.stringify(returnedUser))
+
       setUser(returnedUser)
       setUsername('')
       setPassword('')
     } catch (e) {
       console.log(e.message)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInUser')
+    setUser(null)
   }
 
   if (!user) {
@@ -60,6 +75,13 @@ const App = () => {
         {' '}
         logged in
       </p>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+      >
+        logout
+      </button>
 
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
