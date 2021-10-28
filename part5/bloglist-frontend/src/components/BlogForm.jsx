@@ -30,31 +30,29 @@ const BlogForm = ({ handleNewBlog }) => {
   }
 
   return (
-    <>
-      <form onSubmit={handleCreateBlog}>
-        <div>
-          title:
-          <input
-            type="text"
-            name="title"
-            value={title}
-            onChange={handleTitleChange}
-          />
-        </div>
+    <form onSubmit={handleCreateBlog}>
+      <div>
+        title:
+        <input
+          type="text"
+          name="title"
+          value={title}
+          onChange={handleTitleChange}
+        />
+      </div>
 
-        <div>
-          url
-          <input
-            type="text"
-            name="url"
-            value={url}
-            onChange={handleUrlChange}
-          />
-        </div>
+      <div>
+        url
+        <input
+          type="text"
+          name="url"
+          value={url}
+          onChange={handleUrlChange}
+        />
+      </div>
 
-        <button type="submit">create</button>
-      </form>
-    </>
+      <button type="submit">create</button>
+    </form>
   )
 }
 
