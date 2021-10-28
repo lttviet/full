@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const baseUrl = '/api/blogs'
 
@@ -22,6 +22,14 @@ const create = async (newBlog) => {
   return response.data
 }
 
+const like = async (blogId) => {
+  const url = `${baseUrl}/${blogId}`
+  const blog = await (await axios.get(url)).data
+
+  const response = await axios.put(url, { likes: blog.likes + 1 })
+  return response.data
+}
+
 export default {
-  setToken, getAll, create,
+  setToken, getAll, create, like,
 }

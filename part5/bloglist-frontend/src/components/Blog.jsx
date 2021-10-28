@@ -9,7 +9,7 @@ const blogStyle = {
   marginBottom: 5,
 }
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleLike }) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisible = () => setVisible(!visible)
@@ -37,6 +37,12 @@ const Blog = ({ blog }) => {
         {blog.url}
       </div>
       <div>
+        {blog.likes}
+        <button type="button" onClick={handleLike}>
+          like
+        </button>
+      </div>
+      <div>
         {blog.author.name}
       </div>
     </div>
@@ -50,7 +56,9 @@ Blog.propTypes = {
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
     }).isRequired,
+    likes: PropTypes.number.isRequired,
   }).isRequired,
+  handleLike: PropTypes.func.isRequired,
 }
 
 export default Blog

@@ -43,6 +43,11 @@ const App = () => {
     }
   }
 
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInUser')
+    setUser(null)
+  }
+
   const handleNewBlog = async (returnedBlog, errorMessage) => {
     if (returnedBlog) {
       setBlogs(blogs.concat(returnedBlog))
@@ -57,9 +62,19 @@ const App = () => {
     }
   }
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser')
-    setUser(null)
+  const handleLike = async (blog) => {
+    try {
+      const returnedBlog = await blogService.like(blog.id)
+      setBlogs(blogs.map((b) => {
+        if (b.id === blog.id) {
+          return returnedBlog
+        }
+        return b
+      }))
+      showNotification(`Likes ${blog.title}`, true)
+    } catch (e) {
+      showNotification(e.response.data.error, false)
+    }
   }
 
   if (!user) {
@@ -97,7 +112,7 @@ const App = () => {
       </Toggle>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={() => handleLike(blog)} />
       ))}
     </>
   )
