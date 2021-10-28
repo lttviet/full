@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Toggle from './components/Toggle'
 import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [toast, setToast] = useState({ message: '', success: true })
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then((b) => setBlogs(b))
@@ -31,18 +34,27 @@ const App = () => {
   const handleLogin = async (returnedUser, errorMessage) => {
     if (returnedUser) {
       setUser(returnedUser)
-      setToast({ message: '', success: true })
+      showNotification(
+        `${returnedUser.username} logged in`,
+        true,
+      )
     } else {
       showNotification(errorMessage, false)
     }
   }
 
-  const handleNewBlog = async (newBlog) => {
-    setBlogs(blogs.concat(newBlog))
-    showNotification(
-      `a new blog ${newBlog.title} by ${user.username} added`,
-      true,
-    )
+  const handleNewBlog = async (returnedBlog, errorMessage) => {
+    if (returnedBlog) {
+      setBlogs(blogs.concat(returnedBlog))
+
+      blogFormRef.current.toggleVisible()
+      showNotification(
+        `a new blog ${returnedBlog.title} by ${user.username} added`,
+        true,
+      )
+    } else {
+      showNotification(errorMessage, false)
+    }
   }
 
   const handleLogout = () => {
@@ -68,22 +80,21 @@ const App = () => {
 
       <Notification success={toast.success} message={toast.message} />
 
-      <p>
+      <div>
         {user.username}
         {' '}
         logged in
-      </p>
+        <button
+          type="button"
+          onClick={handleLogout}
+        >
+          logout
+        </button>
+      </div>
 
-      <button
-        type="button"
-        onClick={handleLogout}
-      >
-        logout
-      </button>
-
-      <h2>create new</h2>
-
-      <BlogForm handleNewBlog={handleNewBlog} />
+      <Toggle buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm handleNewBlog={handleNewBlog} />
+      </Toggle>
 
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />

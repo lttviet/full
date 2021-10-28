@@ -16,6 +16,7 @@ const BlogForm = ({ handleNewBlog }) => {
       setUrl('')
       handleNewBlog(returnedBlog)
     } catch (e) {
+      handleNewBlog(null, e.response.data.error)
       console.error(e)
     }
   }
