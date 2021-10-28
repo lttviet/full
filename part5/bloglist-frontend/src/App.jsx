@@ -111,7 +111,8 @@ const App = () => {
         <BlogForm handleNewBlog={handleNewBlog} />
       </Toggle>
 
-      {blogs.map((blog) => (
+      <h4>Blog list sorted by likes ascending</h4>
+      {blogs.sort((a, b) => a.likes - b.likes).map((blog) => (
         <Blog key={blog.id} blog={blog} handleLike={() => handleLike(blog)} />
       ))}
     </>
