@@ -9,7 +9,9 @@ const blogStyle = {
   marginBottom: 5,
 }
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({
+  blog, addedByLoggedInUser, handleLike, handleDelete,
+}) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisible = () => setVisible(!visible)
@@ -45,6 +47,13 @@ const Blog = ({ blog, handleLike }) => {
       <div>
         {blog.author.name}
       </div>
+      {addedByLoggedInUser && (
+        <div>
+          <button type="button" onClick={handleDelete}>
+            delete
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -58,7 +67,9 @@ Blog.propTypes = {
     }).isRequired,
     likes: PropTypes.number.isRequired,
   }).isRequired,
+  addedByLoggedInUser: PropTypes.bool.isRequired,
   handleLike: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 }
 
 export default Blog

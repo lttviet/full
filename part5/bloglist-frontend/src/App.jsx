@@ -77,6 +77,23 @@ const App = () => {
     }
   }
 
+  const handleDeleteBlog = async (blog) => {
+    // eslint-disable-next-line no-alert
+    const confirm = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author.name}`,
+    )
+
+    if (!confirm) return
+
+    try {
+      await blogService.deleteBlog(blog.id)
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
+      showNotification(`Delete ${blog.title}`, true)
+    } catch (e) {
+      showNotification(e.response.data.error, false)
+    }
+  }
+
   if (!user) {
     return (
       <>
@@ -113,7 +130,13 @@ const App = () => {
 
       <h4>Blog list sorted by likes ascending</h4>
       {blogs.sort((a, b) => a.likes - b.likes).map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLike={() => handleLike(blog)} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          addedByLoggedInUser={blog.author.username === user.username}
+          handleLike={() => handleLike(blog)}
+          handleDelete={() => handleDeleteBlog(blog)}
+        />
       ))}
     </>
   )
