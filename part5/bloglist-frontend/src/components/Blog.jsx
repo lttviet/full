@@ -18,9 +18,9 @@ const Blog = ({
 
   if (!visible) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blogTitle">
         {blog.title}
-        <button type="button" onClick={toggleVisible}>
+        <button type="button" onClick={toggleVisible} className="viewBtn">
           view
         </button>
       </div>
@@ -29,22 +29,22 @@ const Blog = ({
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className="blogTitle">
         {blog.title}
         <button type="button" onClick={toggleVisible}>
           hide
         </button>
       </div>
-      <div>
+      <div className="blogUrl">
         {blog.url}
       </div>
-      <div>
+      <div className="blogLikes">
         {blog.likes}
-        <button type="button" onClick={handleLike}>
+        <button type="button" onClick={handleLike} className="likeBtn">
           like
         </button>
       </div>
-      <div>
+      <div className="blogAuthor">
         {blog.author.name}
       </div>
       {addedByLoggedInUser && (
