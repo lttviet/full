@@ -8,4 +8,6 @@ const DB_URI = NODE_ENV === 'test'
   ? process.env.TEST_DB_URI
   : process.env.DB_URI
 
-export { PORT, DB_URI, SECRET }
+export {
+  PORT, DB_URI, SECRET, NODE_ENV,
+}

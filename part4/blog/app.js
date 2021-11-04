@@ -5,7 +5,8 @@ import mongoose from 'mongoose'
 import blogsRouter from './controllers/blogs'
 import loginRouter from './controllers/login'
 import usersRouter from './controllers/users'
-import { DB_URI } from './utils/config'
+import testRouter from './controllers/testing'
+import { DB_URI, NODE_ENV } from './utils/config'
 import logger from './utils/logger'
 import {
   errorHandler,
@@ -33,6 +34,10 @@ app.use(requestLogger)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+
+if (NODE_ENV === 'test') {
+  app.use('/api/tests', testRouter)
+}
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
