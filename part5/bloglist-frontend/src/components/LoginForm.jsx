@@ -36,7 +36,7 @@ const LoginForm = ({ handleLogin }) => {
   }
 
   return (
-    <form onSubmit={handleSubmitLogin}>
+    <form onSubmit={handleSubmitLogin} data-cy="loginForm">
       <div>
         username
         <input
