@@ -69,29 +69,70 @@ describe('Blog app', function () {
     describe('when multiple blogs exists', function () {
       beforeEach(function () {
         cy.createBlog('Blog 2', '/blog2', 0)
-        cy.createBlog('Blog 3', '/blog3', 10)
+        cy.createBlog('Blog 3', '/blog3', 1)
+        cy.createBlog('Blog 4', '/blog4', 2)
       })
 
       it('can like a blog', function () {
-        cy.contains('Blog 2').find('.viewBtn').click()
-        cy.contains('Blog 2').parent().find('.blogLikes').as('likeSection')
-        cy.get('@likeSection').contains('0')
+        cy.contains('Blog 2').parent().find('.viewBtn').click()
+        cy.contains('Blog 2').parent().find('.blogLikes').as('likeDiv')
+        cy.get('@likeDiv').contains('0')
 
-        cy.get('@likeSection').find('.likeBtn').click()
-        cy.get('@likeSection').contains('1')
+        cy.get('@likeDiv').find('.likeBtn').click()
+        cy.get('@likeDiv').contains('1')
       })
 
       it('can delete their blog', function () {
-        cy.contains('Blog 2').find('.viewBtn').click()
+        cy.contains('Blog 2').parent().find('.viewBtn').click()
         cy.contains('Blog 2').parent().find('.deleteBtn').click()
 
         cy.get('.blogTitle').should('not.contain', 'Blog 2')
       })
 
-      it.only('another user can not delete blog', function () {
+      it('another user can not delete blog', function () {
         cy.login('test', '123')
-        cy.contains('Blog 2').find('.viewBtn').click()
+        cy.contains('Blog 2').parent().find('.viewBtn').click()
         cy.get('.deleteBtn').should('not.exist')
+      })
+
+      it('blogs are ordered by likes', function () {
+        const initialOrder = ['Blog 2', 'Blog 3', 'Blog 4']
+
+        cy.get('.blogTitle').each((span, i) => {
+          expect(span.text()).to.equal(initialOrder[i])
+        })
+
+        cy.get('.viewBtn').click({ multiple: true })
+
+        for (let i = 0; i < 3; i += 1) {
+          cy.get('.blogTitle')
+            .contains('Blog 2')
+            .parent()
+            .find('.blogLikes')
+            .as('likeDiv2')
+
+          cy.get('@likeDiv2').contains(`${0 + i}`)
+          cy.get('@likeDiv2').find('.likeBtn').click()
+          cy.get('@likeDiv2').contains(`${1 + i}`)
+        }
+
+        for (let i = 0; i < 3; i += 1) {
+          cy.get('.blogTitle')
+            .contains('Blog 3')
+            .parent()
+            .find('.blogLikes')
+            .as('likeDiv3')
+
+          cy.get('@likeDiv3').contains(`${1 + i}`)
+          cy.get('@likeDiv3').find('.likeBtn').click()
+          cy.get('@likeDiv3').contains(`${2 + i}`)
+        }
+
+        const newOrder = ['Blog 4', 'Blog 2', 'Blog 3']
+
+        cy.get('.blogTitle').each((span, i) => {
+          expect(span.text()).to.equal(newOrder[i])
+        })
       })
     })
   })

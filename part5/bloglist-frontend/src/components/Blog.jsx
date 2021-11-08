@@ -18,8 +18,10 @@ const Blog = ({
 
   if (!visible) {
     return (
-      <div style={blogStyle} className="blogTitle">
-        {blog.title}
+      <div style={blogStyle}>
+        <span className="blogTitle">
+          {blog.title}
+        </span>
         <button type="button" onClick={toggleVisible} className="viewBtn">
           view
         </button>
@@ -29,12 +31,12 @@ const Blog = ({
 
   return (
     <div style={blogStyle}>
-      <div className="blogTitle">
+      <span className="blogTitle">
         {blog.title}
-        <button type="button" onClick={toggleVisible}>
-          hide
-        </button>
-      </div>
+      </span>
+      <button type="button" onClick={toggleVisible}>
+        hide
+      </button>
       <div className="blogUrl">
         {blog.url}
       </div>
