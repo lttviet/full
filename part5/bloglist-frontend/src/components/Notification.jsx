@@ -20,7 +20,7 @@ const Notification = ({ success = true, message }) => {
   return (
     <>
       {message && (
-        <div style={success ? successStyle : errorStyle}>
+        <div style={success ? successStyle : errorStyle} data-cy="notification">
           {message}
         </div>
       )}

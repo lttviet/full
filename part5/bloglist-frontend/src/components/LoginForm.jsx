@@ -44,6 +44,7 @@ const LoginForm = ({ handleLogin }) => {
           name="username"
           value={username}
           onChange={handleUsernameChange}
+          data-cy="username"
         />
       </div>
 
@@ -54,10 +55,11 @@ const LoginForm = ({ handleLogin }) => {
           name="password"
           value={password}
           onChange={handlePasswordChange}
+          data-cy="password"
         />
       </div>
 
-      <button type="submit">login</button>
+      <button type="submit" data-cy="loginBtn">login</button>
     </form>
   )
 }
