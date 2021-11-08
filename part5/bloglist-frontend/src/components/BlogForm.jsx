@@ -39,6 +39,7 @@ const BlogForm = ({ handleNewBlog }) => {
           name="title"
           value={title}
           onChange={handleTitleChange}
+          data-cy="title"
         />
       </div>
 
@@ -50,10 +51,11 @@ const BlogForm = ({ handleNewBlog }) => {
           name="url"
           value={url}
           onChange={handleUrlChange}
+          data-cy="url"
         />
       </div>
 
-      <button type="submit">create</button>
+      <button type="submit" data-cy="createBlogBtn">create</button>
     </form>
   )
 }

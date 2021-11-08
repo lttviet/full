@@ -49,7 +49,7 @@ const Blog = ({
       </div>
       {addedByLoggedInUser && (
         <div>
-          <button type="button" onClick={handleDelete}>
+          <button type="button" onClick={handleDelete} className="deleteBtn">
             delete
           </button>
         </div>
