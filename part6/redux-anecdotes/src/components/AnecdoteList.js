@@ -7,7 +7,7 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const orderedAnecdotes = useMemo(() => {
-    return [...anecdotes].sort((a, b) => a.votes > b.votes)
+    return [...anecdotes].sort((a, b) => a.votes - b.votes)
   }, [anecdotes])
 
   const vote = (id) => {
