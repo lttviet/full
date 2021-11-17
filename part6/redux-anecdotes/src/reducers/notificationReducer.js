@@ -1,6 +1,6 @@
 const initialState = {
   id: 0,
-  text: ""
+  text: '',
 }
 
 const reducer = (state = initialState, action) => {
