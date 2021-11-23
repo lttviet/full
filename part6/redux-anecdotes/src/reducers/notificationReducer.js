@@ -35,14 +35,16 @@ const clearNotification = (id) => {
 }
 
 let nextNotificationId = 0
-export const setNotification = (dispatch, text) => {
+export const setNotification = (text, second) => {
   const id = nextNotificationId++
 
-  dispatch(showNotification(id, text))
+  return async (dispatch) => {
+    dispatch(showNotification(id, text))
 
-  setTimeout(() => {
-    dispatch(clearNotification(id))
-  }, 5000)
+    setTimeout(() => {
+      dispatch(clearNotification(id))
+    }, second * 1000)
+  }
 }
 
 export default reducer
