@@ -1,48 +1,38 @@
-const initialState = {
-  id: 0,
-  text: '',
-}
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = '', action) => {
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
-      return {
-        id: action.data.id,
-        text: action.data.text,
-      }
+      return action.data.text
     case 'CLEAR_NOTIFICATION':
-      if (action.data.id === state.id) {
-        return initialState
-      }
-      return state
+      return ''
     default:
       return state
   }
 }
 
-const showNotification = (id, text) => {
+const showNotification = (text) => {
   return {
     type: 'SHOW_NOTIFICATION',
-    data: { id, text },
+    data: { text },
   }
 }
 
-const clearNotification = (id) => {
+const clearNotification = () => {
   return {
     type: 'CLEAR_NOTIFICATION',
-    data: { id },
   }
 }
 
-let nextNotificationId = 0
+let notificationId
+
 export const setNotification = (text, second) => {
-  const id = nextNotificationId++
-
   return async (dispatch) => {
-    dispatch(showNotification(id, text))
+    console.log(notificationId)
+    clearTimeout(notificationId)
 
-    setTimeout(() => {
-      dispatch(clearNotification(id))
+    dispatch(showNotification(text))
+
+    notificationId = setTimeout(() => {
+      dispatch(clearNotification())
     }, second * 1000)
   }
 }
