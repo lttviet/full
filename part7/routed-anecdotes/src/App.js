@@ -1,26 +1,30 @@
 import React, { useState } from 'react'
-
-const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
-  return (
-    <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
-    </div>
-  )
-}
+import { Link, Route, Switch, useRouteMatch, useHistory } from "react-router-dom"
+import Footer from './components/Footer'
+import Menu from './components/Menu'
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map((anecdote) => (
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>
+            {anecdote.content}
+          </Link>
+        </li>
+      ))}
     </ul>
   </div>
 )
+
+const Anecdote = ({ anecdote }) => {
+  console.log(anecdote)
+
+  return (
+    <h1>{anecdote.content}</h1>
+  )
+}
 
 const About = () => (
   <div>
@@ -36,19 +40,11 @@ const About = () => (
   </div>
 )
 
-const Footer = () => (
-  <div>
-    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
-
-    See <a href='https://github.com/fullstack-hy/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
-  </div>
-)
 
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -74,14 +70,19 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
         <button>create</button>
       </form>
     </div>
   )
-
 }
+
+const Notification = ({ notification }) => (
+  <p>
+    {notification}
+  </p>
+)
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -103,9 +104,19 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const history = useHistory()
+
+  const match = useRouteMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdotes.find((a) => a.id === match.params.id)
+    : null
+
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+
+    history.push('/')
+    showNotification(`a new anecdote ${anecdote.content} was created!`)
   }
 
   const anecdoteById = (id) =>
@@ -122,13 +133,35 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const showNotification = (msg) => {
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000)
+  }
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+
+      {notification && <Notification notification={notification} />}
+
+      <Switch>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
+
       <Footer />
     </div>
   )
