@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Toggle from './components/Toggle'
+import { showError, showSuccess } from './redux/alertSlice'
 import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [toast, setToast] = useState({ message: '', success: true })
 
   const blogFormRef = useRef()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then((b) => setBlogs(b))
@@ -26,9 +29,12 @@ const App = () => {
     }
   }, [])
 
-  const showNotification = (message, success, ms = 5000) => {
-    setToast({ message, success })
-    setTimeout(() => setToast({ message: '', success: true }), ms)
+  const showNotification = (message, success) => {
+    if (success) {
+      dispatch(showSuccess(message))
+    } else {
+      dispatch(showError(message))
+    }
   }
 
   const handleLogin = async (returnedUser, errorMessage) => {
@@ -97,7 +103,7 @@ const App = () => {
   if (!user) {
     return (
       <>
-        <Notification success={toast.success} message={toast.message} />
+        <Notification />
 
         <h2>login</h2>
 
@@ -110,7 +116,7 @@ const App = () => {
     <>
       <h2>blogs</h2>
 
-      <Notification success={toast.success} message={toast.message} />
+      <Notification />
 
       <div>
         {user.username}
