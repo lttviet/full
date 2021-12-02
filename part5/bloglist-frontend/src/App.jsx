@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Toggle from './components/Toggle'
@@ -9,16 +9,9 @@ import { showError, showSuccess } from './redux/alertSlice'
 import blogService from './services/blogs'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
-  const blogFormRef = useRef()
-
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    blogService.getAll().then((b) => setBlogs(b))
-  }, [])
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
@@ -54,51 +47,37 @@ const App = () => {
     setUser(null)
   }
 
-  const handleNewBlog = async (returnedBlog, errorMessage) => {
-    if (returnedBlog) {
-      setBlogs(blogs.concat(returnedBlog))
+  // const handleLike = async (blog) => {
+  //   try {
+  //     const returnedBlog = await blogService.like(blog.id)
+  //     setBlogs(blogs.map((b) => {
+  //       if (b.id === blog.id) {
+  //         return returnedBlog
+  //       }
+  //       return b
+  //     }))
+  //     showNotification(`Likes ${blog.title}`, true)
+  //   } catch (e) {
+  //     showNotification(e.response.data.error, false)
+  //   }
+  // }
 
-      blogFormRef.current.toggleVisible()
-      showNotification(
-        `a new blog ${returnedBlog.title} by ${user.username} added`,
-        true,
-      )
-    } else {
-      showNotification(errorMessage, false)
-    }
-  }
+  // const handleDeleteBlog = async (blog) => {
+  //   // eslint-disable-next-line no-alert
+  //   const confirm = window.confirm(
+  //     `Remove blog ${blog.title} by ${blog.author.name}`,
+  //   )
 
-  const handleLike = async (blog) => {
-    try {
-      const returnedBlog = await blogService.like(blog.id)
-      setBlogs(blogs.map((b) => {
-        if (b.id === blog.id) {
-          return returnedBlog
-        }
-        return b
-      }))
-      showNotification(`Likes ${blog.title}`, true)
-    } catch (e) {
-      showNotification(e.response.data.error, false)
-    }
-  }
+  //   if (!confirm) return
 
-  const handleDeleteBlog = async (blog) => {
-    // eslint-disable-next-line no-alert
-    const confirm = window.confirm(
-      `Remove blog ${blog.title} by ${blog.author.name}`,
-    )
-
-    if (!confirm) return
-
-    try {
-      await blogService.deleteBlog(blog.id)
-      setBlogs(blogs.filter((b) => b.id !== blog.id))
-      showNotification(`Delete ${blog.title}`, true)
-    } catch (e) {
-      showNotification(e.response.data.error, false)
-    }
-  }
+  //   try {
+  //     await blogService.deleteBlog(blog.id)
+  //     setBlogs(blogs.filter((b) => b.id !== blog.id))
+  //     showNotification(`Delete ${blog.title}`, true)
+  //   } catch (e) {
+  //     showNotification(e.response.data.error, false)
+  //   }
+  // }
 
   if (!user) {
     return (
@@ -130,20 +109,11 @@ const App = () => {
         </button>
       </div>
 
-      <Toggle buttonLabel="create new blog" ref={blogFormRef}>
-        <BlogForm handleNewBlog={handleNewBlog} />
+      <Toggle buttonLabel="create new blog">
+        <BlogForm />
       </Toggle>
 
-      <h4>Blog list sorted by likes ascending</h4>
-      {blogs.sort((a, b) => a.likes - b.likes).map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          addedByLoggedInUser={blog.author.username === user.username}
-          handleLike={() => handleLike(blog)}
-          handleDelete={() => handleDeleteBlog(blog)}
-        />
-      ))}
+      <BlogList />
     </>
   )
 }
