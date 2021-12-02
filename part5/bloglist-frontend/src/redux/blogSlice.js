@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import { showError, showSuccess } from './alertSlice'
 
 export const getAllBlogs = createAsyncThunk(
   'blogs/getAll',
@@ -9,7 +10,23 @@ export const getAllBlogs = createAsyncThunk(
 
 export const createNewBlog = createAsyncThunk(
   'blogs/new',
-  async (newBlog) => blogService.create(newBlog),
+  async (newBlog, { dispatch, rejectWithValue }) => {
+    try {
+      newBlog = await blogService.create(newBlog)
+      dispatch(showSuccess(`a new blog ${newBlog.title} added`))
+      return newBlog
+    } catch (e) {
+      const error = e.response.data
+
+      if (error.error) {
+        dispatch(showError(error.error))
+      } else {
+        dispatch(showError(error))
+      }
+
+      return rejectWithValue(error)
+    }
+  },
 )
 
 const initialState = []
