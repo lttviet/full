@@ -4,7 +4,7 @@ import Blog from '../models/blog'
 
 const testRouter = express.Router()
 
-testRouter.post('/reset', async (request, response) => {
+testRouter.post('/reset', async (_, response) => {
   await User.deleteMany({})
   await Blog.deleteMany({})
 
