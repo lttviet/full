@@ -1,60 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Toggle from './components/Toggle'
-import { showError, showSuccess } from './redux/alertSlice'
-import blogService from './services/blogs'
+import { logout } from './redux/userSlice'
 
 const App = () => {
-  const [user, setUser] = useState(null)
-
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
 
-  useEffect(() => {
-    const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
-    if (loggedInUserJSON) {
-      const loggedInUser = JSON.parse(loggedInUserJSON)
-      setUser(loggedInUser)
-      blogService.setToken(loggedInUser.token)
-    }
-  }, [])
+  const handleLogout = () => dispatch(logout())
 
-  const showNotification = (message, success) => {
-    if (success) {
-      dispatch(showSuccess(message))
-    } else {
-      dispatch(showError(message))
-    }
-  }
-
-  const handleLogin = async (returnedUser, errorMessage) => {
-    if (returnedUser) {
-      setUser(returnedUser)
-      showNotification(
-        `${returnedUser.username} logged in`,
-        true,
-      )
-    } else {
-      showNotification(errorMessage, false)
-    }
-  }
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedInUser')
-    setUser(null)
-  }
-
-  if (!user) {
+  if (!user.token) {
     return (
       <>
         <Notification />
 
         <h2>login</h2>
 
-        <LoginForm handleLogin={handleLogin} />
+        <LoginForm />
       </>
     )
   }

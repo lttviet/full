@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, likeBlog } from '../redux/blogSlice'
 
 const blogStyle = {
@@ -11,10 +11,10 @@ const blogStyle = {
   marginBottom: 5,
 }
 
-const Blog = ({
-  blog, addedByLoggedInUser,
-}) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
+
   const [visible, setVisible] = useState(false)
 
   const toggleVisible = () => setVisible(!visible)
@@ -65,7 +65,7 @@ const Blog = ({
       <div className="blogAuthor">
         {blog.author.name}
       </div>
-      {addedByLoggedInUser && (
+      {(user.username === blog.author.username) && (
         <div>
           <button type="button" onClick={handleDelete} className="deleteBtn">
             delete
@@ -83,10 +83,10 @@ Blog.propTypes = {
     url: PropTypes.string.isRequired,
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
     }).isRequired,
     likes: PropTypes.number.isRequired,
   }).isRequired,
-  addedByLoggedInUser: PropTypes.bool.isRequired,
 }
 
 export default Blog
