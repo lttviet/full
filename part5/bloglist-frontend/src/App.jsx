@@ -13,7 +13,7 @@ const App = () => {
 
   const handleLogout = () => dispatch(logout())
 
-  if (!user.token) {
+  if (!user) {
     return (
       <>
         <Notification />

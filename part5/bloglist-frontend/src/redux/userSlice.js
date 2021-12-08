@@ -36,14 +36,13 @@ export const logout = createAsyncThunk(
     const { user } = getState()
 
     window.localStorage.removeItem('loggedInUser')
+    blogService.setToken(null)
+
     dispatch(showSuccess(`${user.username} logged out`))
   },
 )
 
-let initialState = {
-  token: '',
-  username: '',
-}
+let initialState = null
 
 const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
 if (loggedInUserJSON) {
@@ -64,14 +63,14 @@ export const userSlice = createSlice({
     builder
       .addCase(
         login.fulfilled,
-        (state, action) => {
-          state.username = action.payload.username
-          state.token = action.payload.token
-        },
+        (_, action) => ({
+          username: action.payload.username,
+          token: action.payload.token,
+        }),
       )
       .addCase(
         logout.fulfilled,
-        () => initialState,
+        () => null,
       )
   },
 })
