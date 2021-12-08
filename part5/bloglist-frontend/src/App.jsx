@@ -47,38 +47,6 @@ const App = () => {
     setUser(null)
   }
 
-  // const handleLike = async (blog) => {
-  //   try {
-  //     const returnedBlog = await blogService.like(blog.id)
-  //     setBlogs(blogs.map((b) => {
-  //       if (b.id === blog.id) {
-  //         return returnedBlog
-  //       }
-  //       return b
-  //     }))
-  //     showNotification(`Likes ${blog.title}`, true)
-  //   } catch (e) {
-  //     showNotification(e.response.data.error, false)
-  //   }
-  // }
-
-  // const handleDeleteBlog = async (blog) => {
-  //   // eslint-disable-next-line no-alert
-  //   const confirm = window.confirm(
-  //     `Remove blog ${blog.title} by ${blog.author.name}`,
-  //   )
-
-  //   if (!confirm) return
-
-  //   try {
-  //     await blogService.deleteBlog(blog.id)
-  //     setBlogs(blogs.filter((b) => b.id !== blog.id))
-  //     showNotification(`Delete ${blog.title}`, true)
-  //   } catch (e) {
-  //     showNotification(e.response.data.error, false)
-  //   }
-  // }
-
   if (!user) {
     return (
       <>

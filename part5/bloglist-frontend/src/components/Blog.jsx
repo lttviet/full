@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deleteBlog, likeBlog } from '../redux/blogSlice'
 
 const blogStyle = {
   paddingTop: 10,
@@ -10,11 +12,25 @@ const blogStyle = {
 }
 
 const Blog = ({
-  blog, addedByLoggedInUser, handleLike, handleDelete,
+  blog, addedByLoggedInUser,
 }) => {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
 
   const toggleVisible = () => setVisible(!visible)
+
+  const handleLike = () => dispatch(likeBlog(blog.id))
+
+  const handleDelete = () => {
+    // eslint-disable-next-line no-alert
+    const confirm = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author.name}`,
+    )
+
+    if (!confirm) return
+
+    dispatch(deleteBlog(blog))
+  }
 
   if (!visible) {
     return (
@@ -62,6 +78,7 @@ const Blog = ({
 
 Blog.propTypes = {
   blog: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     author: PropTypes.shape({
@@ -70,8 +87,6 @@ Blog.propTypes = {
     likes: PropTypes.number.isRequired,
   }).isRequired,
   addedByLoggedInUser: PropTypes.bool.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
 }
 
 export default Blog
