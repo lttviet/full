@@ -13,4 +13,9 @@ const getAll = async () => {
   return response.data
 }
 
-export default { login, getAll }
+const getOne = async (id) => {
+  const response = await axios.get(`${baseUserUrl}/${id}`)
+  return response.data
+}
+
+export default { login, getAll, getOne }

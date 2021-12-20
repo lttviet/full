@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { logout } from './redux/loggedInUserSlice'
 import Home from './routes/home'
+import User from './routes/user'
 import Users from './routes/users'
 
 const App = () => {
@@ -54,6 +55,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User />} />
       </Routes>
     </>
   )
