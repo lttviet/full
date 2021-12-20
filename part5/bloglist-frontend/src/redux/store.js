@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { alertSlice } from './alertSlice'
 import { blogSlice } from './blogSlice'
-import { userSlice } from './userSlice'
+import { loggedInUserSlice } from './loggedInUserSlice'
 
 const store = configureStore({
   reducer: {
     alert: alertSlice.reducer,
     blogs: blogSlice.reducer,
-    user: userSlice.reducer,
+    loggedInUser: loggedInUserSlice.reducer,
   },
 })
 

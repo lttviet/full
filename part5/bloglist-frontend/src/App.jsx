@@ -5,11 +5,11 @@ import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Toggle from './components/Toggle'
-import { logout } from './redux/userSlice'
+import { logout } from './redux/loggedInUserSlice'
 
 const App = () => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.loggedInUser)
 
   const handleLogout = () => dispatch(logout())
 

@@ -13,7 +13,7 @@ const blogStyle = {
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.loggedInUser)
 
   const [visible, setVisible] = useState(false)
 

@@ -55,7 +55,7 @@ if (loggedInUserJSON) {
   }
 }
 
-export const userSlice = createSlice({
+export const loggedInUserSlice = createSlice({
   name: 'loggedInUser',
   initialState,
   reducers: {},
