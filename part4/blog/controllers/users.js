@@ -15,7 +15,12 @@ usersRouter.get('/:id', async (request, response) => {
   const user = await User
     .findById(request.params.id)
     .populate('blogs', { title: 1 })
-  response.json(user)
+
+  if (user) {
+    response.json(user)
+  } else {
+    response.status(404).end()
+  }
 })
 
 usersRouter.post('/', async (request, response) => {
