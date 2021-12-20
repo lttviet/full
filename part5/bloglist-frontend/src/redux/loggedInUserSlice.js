@@ -1,14 +1,14 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
-import loginService from '../services/login'
+import userService from '../services/user'
 import { showError, showSuccess } from './alertSlice'
 
 export const login = createAsyncThunk(
   'user/login',
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
-      const user = await loginService.login(credentials)
+      const user = await userService.login(credentials)
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       // TODO pass token as a parameter
       blogService.setToken(user.token)
