@@ -1,11 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import BlogForm from './components/BlogForm'
-import BlogList from './components/BlogList'
+import { Link, Route, Routes } from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
-import Toggle from './components/Toggle'
 import { logout } from './redux/loggedInUserSlice'
+import Home from './routes/home'
+import Users from './routes/users'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -43,11 +43,18 @@ const App = () => {
         </button>
       </div>
 
-      <Toggle buttonLabel="create new blog">
-        <BlogForm />
-      </Toggle>
+      <nav>
+        <Link to="/">Home</Link>
+        {' '}
+        |
+        {' '}
+        <Link to="/users">Users</Link>
+      </nav>
 
-      <BlogList />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </>
   )
 }

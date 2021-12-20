@@ -8,16 +8,26 @@ const UserList = () => {
 
   useEffect(() => {
     dispatch(getAllUsers())
-  })
+  }, [])
 
   return (
-    <>
-      <h4>Users</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>username</th>
+          <th>blogs created</th>
+        </tr>
+      </thead>
 
-      {users.map((user) => (
-        <p>{user.username}</p>
-      ))}
-    </>
+      <tbody>
+        {users.map((user) => (
+          <tr key={user.username}>
+            <td>{user.name}</td>
+            <td>{user.blogs.length}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 
