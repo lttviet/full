@@ -1,7 +1,15 @@
 import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { getAllBlogs } from '../redux/blogSlice'
-import Blog from './Blog'
+
+const blogLinkStyle = {
+  paddingTop: 10,
+  paddingLeft: 2,
+  border: 'solid',
+  boderWidth: 1,
+  marginBottom: 5,
+}
 
 const BlogList = () => {
   const dispatch = useDispatch()
@@ -21,10 +29,11 @@ const BlogList = () => {
       <h4>Blog list sorted by likes ascending</h4>
 
       {sortedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-        />
+        <div style={blogLinkStyle}>
+          <Link to={`/blogs/${blog.id}`}>
+            {blog.title}
+          </Link>
+        </div>
       ))}
     </>
   )
