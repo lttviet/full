@@ -43,7 +43,6 @@ export const userSlice = createSlice({
         getOneUser.fulfilled,
         (state, action) => {
           const idx = state.findIndex((u) => u.id === action.payload.id)
-          console.log(idx)
           if (idx === -1) {
             state.push(action.payload)
           } else {

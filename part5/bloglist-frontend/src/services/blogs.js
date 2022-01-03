@@ -13,6 +13,11 @@ const getAll = async () => {
   return response.data
 }
 
+const getOne = async (id) => {
+  const response = await axios.get(`${baseUrl}/${id}`)
+  return response.data
+}
+
 const create = async (newBlog) => {
   const config = {
     headers: { Authorization: token },
@@ -41,5 +46,5 @@ const deleteBlog = async (blogId) => {
 }
 
 export default {
-  setToken, getAll, create, like, deleteBlog,
+  setToken, getAll, getOne, create, like, deleteBlog,
 }

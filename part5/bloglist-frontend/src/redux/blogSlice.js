@@ -8,6 +8,11 @@ export const getAllBlogs = createAsyncThunk(
   async () => blogService.getAll(),
 )
 
+export const getOneBlog = createAsyncThunk(
+  'blogs/getOne',
+  async (id) => blogService.getOne(id),
+)
+
 export const createNewBlog = createAsyncThunk(
   'blogs/new',
   async (newBlog, { dispatch, rejectWithValue }) => {
@@ -84,6 +89,17 @@ export const blogSlice = createSlice({
       .addCase(
         getAllBlogs.fulfilled,
         (_, action) => action.payload,
+      )
+      .addCase(
+        getOneBlog.fulfilled,
+        (state, action) => {
+          const idx = state.findIndex((b) => b.id === action.payload.id)
+          if (idx === -1) {
+            state.push(action.payload)
+          } else {
+            state[idx] = action.payload
+          }
+        },
       )
       .addCase(
         createNewBlog.fulfilled,

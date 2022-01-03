@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { getOneUser } from '../redux/userSlice'
 
 const UserProfile = ({ id }) => {
@@ -27,7 +28,9 @@ const UserProfile = ({ id }) => {
       <ul>
         {user.blogs.map((blog) => (
           <li key={blog.id}>
-            {blog.title}
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title}
+            </Link>
           </li>
         ))}
       </ul>
