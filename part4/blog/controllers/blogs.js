@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import express from 'express'
 import Blog from '../models/blog'
+import Comment from '../models/comment'
 import { userExtractor } from '../utils/middleware'
 
 const blogsRouter = express.Router()
@@ -16,6 +17,7 @@ blogsRouter.get('/:id', async (request, response) => {
   const blog = await Blog
     .findById(request.params.id)
     .populate('author', { username: 1, name: 1 })
+    .populate('comments', { text: 1 })
   response.json(blog)
 })
 
@@ -77,6 +79,25 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   await blog.delete()
 
   return response.status(204).end()
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(404).json({ error: 'not found' })
+  }
+
+  const comment = new Comment({
+    text: request.body.text,
+    blog: blog._id,
+  })
+  const savedComment = await comment.save()
+
+  blog.comments = blog.comments.concat(savedComment._id)
+  await blog.save()
+
+  return response.status(201).json(savedComment)
 })
 
 export default blogsRouter
