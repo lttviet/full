@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOneBlog, likeBlog } from '../redux/blogSlice'
+import CommentList from './CommentList'
 
 const BlogDetails = ({ id }) => {
   const dispatch = useDispatch()
@@ -43,6 +44,8 @@ const BlogDetails = ({ id }) => {
         {' '}
         {blog.author.name}
       </div>
+
+      <CommentList comments={blog.comments} />
     </>
   )
 }
