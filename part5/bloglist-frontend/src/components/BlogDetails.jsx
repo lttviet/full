@@ -45,7 +45,7 @@ const BlogDetails = ({ id }) => {
         {blog.author.name}
       </div>
 
-      <CommentList comments={blog.comments} />
+      <CommentList blogId={blog.id} comments={blog.comments} />
     </>
   )
 }

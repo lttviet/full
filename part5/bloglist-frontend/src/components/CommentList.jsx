@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import CommentForm from './CommentForm'
 
-const CommentList = ({ comments }) => (
+const CommentList = ({ blogId, comments }) => (
   <>
     <h4>comments</h4>
+
+    <CommentForm blogId={blogId} />
 
     <ul>
       {comments.map((comment) => (
@@ -17,6 +20,7 @@ const CommentList = ({ comments }) => (
 )
 
 CommentList.propTypes = {
+  blogId: PropTypes.string.isRequired,
   comments: PropTypes.arrayOf(PropTypes.shape({
     text: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
