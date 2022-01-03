@@ -33,12 +33,12 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   'user/logout',
   async (_, { dispatch, getState }) => {
-    const { user } = getState()
+    const { loggedInUser } = getState()
 
     window.localStorage.removeItem('loggedInUser')
     blogService.setToken(null)
 
-    dispatch(showSuccess(`${user.username} logged out`))
+    dispatch(showSuccess(`${loggedInUser.username} logged out`))
   },
 )
 
