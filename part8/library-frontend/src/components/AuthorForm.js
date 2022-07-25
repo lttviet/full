@@ -2,14 +2,17 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
-const AuthorForm = ({ show }) => {
+const AuthorForm = ({ show, setError }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const result = useQuery(ALL_AUTHORS)
 
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message)
+    },
   })
 
   const submit = async (event) => {
@@ -39,6 +42,7 @@ const AuthorForm = ({ show }) => {
         <div>
           name
           <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option value="" disabled hidden>Select author</option>
             {result.data.allAuthors.map((a) => (
               <option value={a.name}>{a.name}</option>
             ))}

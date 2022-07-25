@@ -26,6 +26,11 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type Recommend {
+    favouriteGenre: String!
+    books: [Book!]
+  }
+
   type Author {
     name: String!
     born: Int
@@ -49,6 +54,7 @@ const typeDefs = gql`
       author: String,
       genre: String,
     ): [Book!]!
+    recommend: Recommend!
     allAuthors: [Author!]!
     me: User
   }
@@ -110,6 +116,20 @@ const resolvers = {
       }
 
       return books.populate('author')
+    },
+    recommend: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
+      const books = await Book.find({ genres: context.currentUser.favouriteGenre }).populate('author')
+
+      const result = {
+        favouriteGenre: context.currentUser.favouriteGenre,
+        books,
+      }
+
+      return result
     },
     allAuthors: async () => Author.find({}),
     me: async (root, args, context) => context.currentUser,
