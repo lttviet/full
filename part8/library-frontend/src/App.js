@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react'
-import { useApolloClient } from '@apollo/client/react'
+import { useApolloClient, useSubscription } from '@apollo/client/react'
 
 import AuthorForm from './components/AuthorForm'
 import Authors from './components/Authors'
@@ -8,12 +8,22 @@ import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Notify from './components/Notify'
 import Recommend from './components/Recommend'
+import { ALL_BOOKS, BOOK_ADDED } from './queries'
+import { updateCache } from './utils'
 
 function App() {
   const [errorMessage, setErrorMessage] = useState('')
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      notify(`${addedBook.title} added`)
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    }
+  })
 
   useEffect(() => {
     // go back to 'authors' page after logging in
