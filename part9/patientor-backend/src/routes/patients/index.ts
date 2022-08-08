@@ -1,6 +1,6 @@
 import express from 'express';
 import patientService from '../../services/patientService';
-import { toNewPatient } from '../../utils';
+import { toNewEntry, toNewPatient } from '../../utils';
 
 const router = express.Router();
 
@@ -25,6 +25,33 @@ router.post('/', (req, res) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const addedPatient = patientService.addPatient(newPatient);
     res.json(addedPatient);
+  } catch (error: unknown) {
+    let errorMsg = 'Something went wrong';
+
+    if (error instanceof Error) {
+      errorMsg = `Error: ${error.message}`;
+    }
+
+    res.status(400).send(errorMsg);
+  }
+});
+
+router.post('/:id/entries', (req, res) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const newEntry = toNewEntry(req.body);
+
+    if (!newEntry) {
+      res.status(500).send('No valid entry');
+    } else {
+      const patient = patientService.addEntry(req.params.id, newEntry);
+
+      if (!patient) {
+        res.status(404).send('Patient not found');
+      }
+
+      res.json(patient);
+    }
   } catch (error: unknown) {
     let errorMsg = 'Something went wrong';
 
